@@ -3026,57 +3026,51 @@ Provides methods to represent and manipulate time as float, string or structures
 \item \textbf{GTM} - Greenwitch Mean Time - time zone officially used in some contries.
 \item \textbf{local time} - it is time in your location.
 \item \textbf{daylight saving time} - it a 1 hour shift (negative or possitive) in current timezone, to make a kind of time adjustment during summer and winter period.
+\item \textbf{STRUCT\_TIME} - named tuple, containing 9 fields, representing date, time, daylight and extra information abot time zone.
 \end{itemize}
 
 \begin{lstlisting}[style=pystyle] 
 import time
 
 # LOCALTIME as SECONDS
-time.time()
-1697905608.2663414
+time.time()	#1697905608.2663414
 
-# TUPLE to TIME_STRUCTURE
+# TUPLE to STRUCT_TIME
 my_time_tuple = (1999, 10, 30, 23, 10, 60, 1, 1, 1)
 my_time = time.struct_time(my_time_tuple)
 print(my_time)
-time.struct_time(tm_year=1999, tm_mon=10, tm_mday=30, tm_hour=23, tm_min=10, tm_sec=60, tm_wday=1, tm_yday=1, tm_isdst=1)
+#time.struct_time(tm_year=1999, tm_mon=10, tm_mday=30, tm_hour=23, tm_min=10, tm_sec=60, tm_wday=1, tm_yday=1, tm_isdst=1)
 
-# UTC, TIME_STRUCTURE to SECONDS
+# UTC, STRUCT_TIME to SECONDS
 import calendar
-calendar.timegm(my_time)
-941325060
+calendar.timegm(my_time)	# 941325060
 
-# LOCALTIME, TIME_STRUCTURE to SECONDS
-time.mktime(my_time)
-941317860.0
+# LOCALTIME, STRUCT_TIME to SECONDS
+time.mktime(my_time)	# 941317860.0
 
-# UTC, SECONDS to TIME_STRUCTURE
+# UTC, SECONDS to STRUCT_TIME
 time.gmtime(123)
-time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=2, tm_sec=3, tm_wday=3, tm_yday=1, tm_isdst=0)
+#time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=2, tm_sec=3, tm_wday=3, tm_yday=1, tm_isdst=0)
 
-# LOCALTIME, SECONDS to TIME_STRUCTURE
+# LOCALTIME, SECONDS to STRUCT_TIME
 time.localtime()
-time.struct_time(tm_year=2023, tm_mon=10, tm_mday=21, tm_hour=18, tm_min=24, tm_sec=34, tm_wday=5, tm_yday=294, tm_isdst=1)
+#time.struct_time(tm_year=2023, tm_mon=10, tm_mday=21, tm_hour=18, tm_min=24, tm_sec=34, tm_wday=5, tm_yday=294, tm_isdst=1)
 
-# STRING to TIME_STRUCTURE
+# STRING to STRUCT_TIME
 time.strptime("2023 10 - 1 2 3", "%Y %m - %H %M %S")
-time.struct_time(tm_year=2023, tm_mon=10, tm_mday=1, tm_hour=1, tm_min=2, tm_sec=3, tm_wday=6, tm_yday=274, tm_isdst=-1)
+#time.struct_time(tm_year=2023, tm_mon=10, tm_mday=1, tm_hour=1, tm_min=2, tm_sec=3, tm_wday=6, tm_yday=274, tm_isdst=-1)
 
 # SECONDS to STRING
-time.ctime(123)
-'Thu Jan  1 01:02:03 1970'
+time.ctime(123)	#'Thu Jan  1 01:02:03 1970'
 
-# TIME_STRUCTURE to STRING
-time.asctime(my_time)
-'Tue Oct 30 23:10:60 1999'
+# STRUCT_TIME to STRING
+time.asctime(my_time)	#'Tue Oct 30 23:10:60 1999'
 
 # LOCALTIME formated STRING
-time.strftime("%Y - %M - %D")
-'2023 - 47 - 10/21/23'
+time.strftime("%Y - %M - %D")	#'2023 - 47 - 10/21/23'
 
-# TIME_STRUCTURE to formated STRING
-time.strftime("%Y - %M - %D", my_time)
-'1999 - 10 - 10/30/99'
+# STRUCT_TIME to formated STRING
+time.strftime("%Y - %M - %D", my_time)	#'1999 - 10 - 10/30/99'
 
 # susped execution
 time.sleep(0.012)
@@ -3085,25 +3079,74 @@ time.sleep(0.012)
 start = time.process_time() 
 time.sleep(0.1)
 stop = time.process_time()
-print(start-stop)
-0.0
+print(start-stop)		#0.0
 
 start = time.perf_counter() 
 time.sleep(0.1)
 stop = time.perf_counter()
-print(start-stop)
--0.11232290000043577
+print(start-stop)		#-0.11232290000043577
 
 \end{lstlisting}
 
-\subsection{Time Module}
-Provides methods to represent and manipulate dates and times. Refer to \ref{time:1} few useful definitions first.
+\subsection{Datetime Module}
+Provides methods to represent and manipulate dates and times. Refer to \ref{time:1} few useful definitions first. This module introduces olso two more definitions:
 \begin{itemize}
-\item 
+\item \textbf{naive} - means the date and time may not reflect actual geopolitical values.
+\item \textbf{aware} - when information like \textit{tzinfo is not None} and \textit{tzinfo.utcoffset does not return None} the date and time reflects actual geopolitical values. 
+\item \textbf{weekday} - from Monday=0 to Sunday=6.
+\item \textbf{isoweekday} - from Monday=1 to Sunday=7.
 \end{itemize}
+Naive and aware definitions are valid only for datetime.datetime and datetime.time.
 
 \begin{lstlisting}[style=pystyle] 
-import datetime
+import datetime as dt
+
+# DATE from constructor
+data = dt.date(1999, 2, 3)
+print(data)		#1999-02-03
+
+# DATE from today method
+data = dt.date.today()
+data.year		#2023
+data.month		#10
+data.day		#22
+
+# DATE from SECONDS
+data = dt.date.fromtimestamp(1697890111) 
+data.month	#10
+data.year	#2023
+data.day	#21
+
+# DATE from ISOFORMAT
+# year, month, day
+dt.date.fromisoformat('2019-12-04')	#datetime.date(2019, 12, 4)
+dt.date.fromisoformat('0001-01-04')	#datetime.date(1, 1, 4)
+
+# DATE from ISOCALENDAR
+# year, weeknumber, weekday
+dt.date.fromisocalendar(2019, 12, 4)	#datetime.date(2019, 3, 21)
+dt.date.fromisocalendar(2019, 50, 1)	#datetime.date(2019, 12, 9)
+
+# Replace year, month or day in given DATE
+data = dt.date(1999,4,8)	#datetime.date(1999, 4, 8)
+data.replace(day=1)			#datetime.date(1999, 4, 1)
+
+# Return DATE as STRUCT_TIME
+data = dt.date(1999,4,8)
+data.timetuple()
+# time.struct_time(tm_year=1999, tm_mon=4, tm_mday=8, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=3, tm_yday=98, tm_isdst=-1)
+
+# DATE access and representation methods
+data.weekday()		#3
+data.isoweekday()	#4
+data.isoformat()	#'1999-04-08'
+data.isocalendar()	#datetime.IsoCalendarDate(year=1999, week=14, weekday=4)
+data.month			#4
+data.day			#8
+data.year			#1999
+data.ctime()		#'Thu Apr  8 00:00:00 1999'
+
+
 
 
 \end{lstlisting}
