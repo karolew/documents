@@ -222,6 +222,21 @@ print(dir(math))
 # Print all items in local scope
 print(dir())
 	\end{lstlisting}
+The dir function calls \_\_dir\_\_() method.
+	\begin{lstlisting}[style=pystyle]
+class Ala:
+    gender = "female"
+    def __init__(self, name):
+        self.name = name
+        self.age = 1
+    def age(self):
+        return self.age
+
+a = Ala(1)
+dir(a)
+dir(Ala(2))
+# content of dir(Ala(2)) and dir(a) is the same. 
+	\end{lstlisting}
 
 
 
@@ -368,8 +383,8 @@ print(0.E3)		#0.0
 "Ala" > "ala"	#False
 \end{lstlisting}
 Comparing strings with number is possible but WRONG. Only \textbf{==} and \textbf{!=} operators are allowed, and comparison with == always produce False, while comparison with != always produce True. Attempt to use $<, <=, >, >=$ operators ends with \textcolor{pythonerror}{TypeError}
-\item \textbf{ord(str)} (ordinal - porzadkowy) - returns ASCII/Unicode number representing character. The function needs a one-character string as its argument - breaching this requirement causes a \textcolor{pythonerror}{TypeError} exception, and returns a number representing the argument's code point.	
-\item \textbf{chr(int)} - the function takes a code point and returns its character. \textcolor{pythonerror}{TypeError} is raised when trying pass anything different than integer. \textcolor{pythonerror}{ValueError} is raaising in case of negative integers.
+\item \textbf{ord(str)} (ordinal - porzadkowy) - returns ASCII/Unicode number (code point) representing character. The function needs a one-character string as its argument - breaching this requirement causes a \textcolor{pythonerror}{TypeError} exception, and returns a number representing the argument's length.	
+\item \textbf{chr(int)} - this function takes a code point and returns its character. \textcolor{pythonerror}{TypeError} is raised when trying pass anything different than integer. \textcolor{pythonerror}{ValueError} is raising in case of negative integers.
 \item len("some string")
 \item indexing
 \item slicing
@@ -2524,7 +2539,7 @@ print(pi, math.pi)	#1000, 3.14...
 \end{figure}
 During first import of mdule, Python translate code from the module into \textbf{semi-compiled} format (it is not binary format) inside the \textbf{pyc} files and deploys these files into the \textbf{\_\_pycache\_\_} directory located in the module home directory. Imported module is \textbf{implicitly executed}. This is why \textbf{\_\_name\_\_=='\_\_main\_\_'} condition is used to eliminate execution durign import, and allowing to execute module during direct call. Note that in case of multiple imports of the same module, only the first import is performing by Python, other imports are silently skipping.
 \paragraph{}
-When importing module or entity importing from module does not exist, an \textcolor{pythonerror}{ImportError} exception is raised.
+When importing a module or an entity from module which does not exist, an \textcolor{pythonerror}{ImportError} exception is raised.
 
 \subsection{Namespaces and Scopes}
 \textbf{Scope} and \textbf{Namespace} are corelated topics. Namespace is simply a dictionary mapping names to values. This dictionary is kind of lookup table used by Python interpreter when executing code to determine available objects (variable names, function names etc). And if they exist, the interpreter uses their values otherwise returns \textcolor{pythonerror}{NameError}. Scope according to Python definition is a textual region of a Python program where a namespace is directly accessible.
@@ -2632,11 +2647,11 @@ sys.path.append("C:/Python/custom_files")
 \end{lstlisting}
 
 
-\subsection{Pycache}
+\subsection{\_\_pycache\_\_}
 When Python import modules in another module, it first prepare a specific semi-complied files of imported modules. These files are placed in \_\_pycache\_\_ directory, and have following naming convention: \textbf{module\_name.cpython-xy.pyc}, where x and y determines python version (3.10 x=3, y=10). There precompiled files are tracked automatically by Python and updated when necessary.  
 
 
-\subsection{Module execution - import vs standalone}
+\subsection{\_\_name\_\_}
 Special conditional check is used to prevent running module as standalone file when it is importing to another one module.
 \begin{lstlisting}[style=pystyle]
 # my_module.py
@@ -2655,7 +2670,7 @@ else:
 	print("This is run when main is importing")
 \end{lstlisting}
 The \_\_name\_\_ special variable keeps "\_\_main\_\_" content when it is executing directly, otherwise it keeps module name. This mechanism can be used to run test for module, when it is executing directly.
-Thid mechanism can be used to prevent run a module standalone.
+Third mechanism can be used to prevent run a module standalone.
 \begin{lstlisting}[style=pystyle]
 import sys
 
@@ -2683,9 +2698,9 @@ import src.other.module2
 Updating a \textbf{path} Python is informed to use non standard package directory.
 
 \subsection{Private Module Elements}
-In Python tehre are no possibility to make object private inside module. Any entity created in module is visible and accessible after import. But there is a convention  to instruct users that a particular entity should be treated as private, by using \textbf{\_} or \textbf{\_\_} prefix before object name.
+Python has no possibility to make object private inside module. Any entity created in module is visible and accessible after import. But there is a convention  to instruct users that a particular entity should be treated as private, by using \textbf{\_} or \textbf{\_\_} prefix before object name.
 
-\subsection{Module init}
+\subsection{\_\_init\_\_.py}
 A Python file named \_\_init\_\_.py is design to be run when a package containing it is importing. Can be used to initialize a package. The file may be empty, but must exist.
 
 
@@ -2810,6 +2825,7 @@ random.choices([1, 2, 3, 4, 5], [0, 0, 0, 1, 0])
 random.sample([1,2,3,4,5], counts=[4,1,0,0,0], k=2)
 # Which is equivalent to
 random.sample([1,1,1,1,2], k=2)
+# Important thing is the total number of elements in counts (sum of counts) must be equal or grater than lenght of samples list. In example above, replacing counts=[4,1,0,0,0] with counts=[3,1,0,0,0] will produce ValueError.
 
 # Random int value from number of bits
 # For 3 bits returns integers in range 0 to 7
